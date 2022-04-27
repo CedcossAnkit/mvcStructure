@@ -11,4 +11,9 @@ class Eventhandler extends Injectable
     {
         die("hii event");
     }
+    public function beforeHandleRequest()
+    {
+        echo "hii";
+        die;
+    }
 }

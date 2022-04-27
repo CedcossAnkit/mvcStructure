@@ -14,12 +14,16 @@ use Phalcon\Events\Manager as eventManager;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use Phalcon\Mvc\Router;
+use Phalcon\Http\Request;
+
+///jwt
 
 
 
 
 define("BASE_PATH", dirname(__DIR__));
 define("APP_PATH", BASE_PATH . "/app");
+require_once("../vendor/autoload.php");
 
 // die(APP_PATH);
 
@@ -68,6 +72,8 @@ $container->set(
         return $configLoad->newInstance('php', $filename);
     }
 );
+
+///view
 $container->set(
     'view',
     function () {
@@ -87,6 +93,17 @@ $container->set(
 $eventmanger->attach(
     'eventhandler',
     new App\Listener\Eventhandler()
+);
+
+$eventmanger->attach(
+    'application:beforeHandleRequest',
+    function () {
+        $request = new Request();
+        if (($request->get("role"))) {
+        } else {
+        die("role is needed");
+        }
+    }
 );
 
 //Session
@@ -120,7 +137,7 @@ $container->set(
 );
 
 $application = new Application($container);
-
+$application->setEventsManager($eventmanger);
 try {
     $response = $application->handle(
         $_SERVER["REQUEST_URI"]
